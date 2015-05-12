@@ -6,14 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nearsoft.pleasenoteme.bean.Note;
@@ -46,7 +42,7 @@ public class EditNote extends Activity {
             editTextContent.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
 
             Button deleteButton = (Button) findViewById(R.id.delete_button);
-            deleteButton.setText(R.string.delete_note);
+            deleteButton.setText(R.string.button_delete_note);
 
             Toast.makeText(getApplicationContext(),
                     noteId, Toast.LENGTH_LONG).show();

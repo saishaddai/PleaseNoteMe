@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
     private void displayNotes() {
         Cursor cursor = dbHelper.getAllNotes();
         String[] columns = new String[] {
+                NotesDbAdapter.KEY_ROWID,
                 NotesDbAdapter.KEY_TITLE,
                 NotesDbAdapter.KEY_CONTENT
         };

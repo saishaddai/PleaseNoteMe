@@ -7,7 +7,7 @@
     <Button android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="@string/note_me"
+        android:text="@string/common_note_me"
         android:textSize="20sp"
         android:onClick="addNewNote"
         />
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/filter_hint"
+        android:hint="@string/hint_filter_hint"
         />
 
     <ListView android:id="@+id/listView1"

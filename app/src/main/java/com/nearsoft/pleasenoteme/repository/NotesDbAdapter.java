@@ -84,7 +84,7 @@ public class NotesDbAdapter {
     public Cursor getNotesByName(String inputText) throws SQLException {
         Log.w(TAG, inputText);
         Cursor mCursor;
-        if (inputText == null  ||  inputText.length () == 0)  {
+        if (inputText.isEmpty())  {
             mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_ROWID,
                             KEY_TITLE, KEY_CONTENT},
                     null, null, null, null, null);
@@ -92,7 +92,7 @@ public class NotesDbAdapter {
         else {
             mCursor = mDb.query(true, SQLITE_TABLE, new String[] {KEY_ROWID,
                             KEY_TITLE, KEY_CONTENT},
-                    KEY_TITLE + " like '%" + inputText + "%'", null,
+                    KEY_TITLE + " LIKE '%" + inputText + "%'", null,
                     null, null, null, null);
         }
         if (mCursor != null) {
@@ -103,8 +103,7 @@ public class NotesDbAdapter {
 
     public Cursor getAllNotes() {
         Cursor mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_ROWID,
-                        KEY_TITLE, KEY_CONTENT},
-                null, null, null, null, KEY_TITLE);
+                        KEY_TITLE, KEY_CONTENT}, null, null, null, null, KEY_TITLE);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -119,7 +118,6 @@ public class NotesDbAdapter {
         createNote("He he","My gf told me I am a saint");
         createNote("Just like marty mcfly","Bringing back to the future");
         createNote("So What do you think?","I'll start selling chicken");
-
     }
 
 }
