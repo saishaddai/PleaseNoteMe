@@ -93,12 +93,16 @@ public class MainActivity extends Activity {
         });
     }
 
-
     public void addNewNote(View view) {
         Intent intent = new Intent(context, EditNote.class);
         intent.putExtra(EXTRA_ID_NOTE, "");
         intent.putExtra(EXTRA_TITLE, "");
         intent.putExtra(EXTRA_CONTENT, "");
+        startActivity(intent);
+    }
+
+    public void useDictionary(View view) {
+        Intent intent = new Intent(context, DictionaryActivity.class);
         startActivity(intent);
     }
 }

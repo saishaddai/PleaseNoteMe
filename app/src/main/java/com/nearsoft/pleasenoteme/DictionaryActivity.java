@@ -23,22 +23,21 @@ import java.net.URL;
 
 public class DictionaryActivity extends Activity {
 
-    public final static String EXTRA_MESSAGE = "com.nearsoft.pleasenote.MESSAGE";
-    private String url = "http://demo6655573.mockable.io/?word=";
-    private final String DICTIONARY_NODE = "dictionary";
-    private final String DICTIONARY_WORD = "word";
-    private final String DICTIONARY_MEANING = "meaning";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_dictionary);
     }
 
     public void sendWordToWS(View view) {
         EditText editText = (EditText) findViewById(R.id.search_word);
         String message = editText.getText().toString();
+        message = sanitizeKeyWord(message);
+        if(message.isEmpty() || message.length() > 50) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.warning_keyword_validation_failed, Toast.LENGTH_LONG).show();
+            return;
+        }
         TextView definitionTextView = (TextView) findViewById(R.id.definition_component);
         definitionTextView.setText("");
 
@@ -46,6 +45,7 @@ public class DictionaryActivity extends Activity {
         StrictMode.setThreadPolicy(policy);
         HttpURLConnection urlConnection = null;
         try {
+            String url = "http://demo6655573.mockable.io/?word=";
             URL obj = new URL(url + message);
             urlConnection = (HttpURLConnection) obj.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -78,14 +78,17 @@ public class DictionaryActivity extends Activity {
     }
 
     private String jsonResponseToPrintable(String jsonResponse) throws JSONException {
-        String printableDefinition = "";
+        String printableDefinition;
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
+            String DICTIONARY_NODE = "definition";
             JSONObject jsonResponseObject =
                     new JSONObject(jsonObject.getString(DICTIONARY_NODE));
 
-            printableDefinition = "<b>" + jsonResponseObject.getString(DICTIONARY_WORD) + ":</b><br> " +
-                    jsonResponseObject.getString(DICTIONARY_MEANING);
+            String DICTIONARY_WORD = "word";
+            String DICTIONARY_MEANING = "meaning";
+            printableDefinition = jsonResponseObject.getString(DICTIONARY_WORD) + ":\n\t\t" +
+                    jsonResponseObject.get(DICTIONARY_MEANING);
 
         } catch (JSONException e) {
             Log.w(DictionaryActivity.class.getName(), getString(R.string.error_dictionary_not_found_500));
@@ -94,5 +97,11 @@ public class DictionaryActivity extends Activity {
         return printableDefinition;
     }
 
+    private String sanitizeKeyWord(String keyword) {
+        if(keyword == null) {
+            return "";
+        }
+        return keyword.replaceAll("[^\\p{L}\\p{Nd}]+", "").toLowerCase();
+    }
 
 }

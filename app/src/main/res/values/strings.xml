@@ -36,6 +36,8 @@
     <!-- Error messages -->
     <string name="error_unreachable_ws">Unreachable service. Try again later…</string>
     <string name="error_dictionary_not_found_500">Dictionary Service Not Found</string>
+    <string name="button_dictionary">Dictionary</string>
+    <string name="warning_keyword_validation_failed">Word Validation Failed</string>
 
 
 </resources>
