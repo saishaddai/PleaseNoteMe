@@ -3,13 +3,13 @@ package com.nearsoft.pleasenoteme.bean;
 public class Dictionary {
 
     private String word;
-    private String meaning;
+    private String meanings;
 
     public Dictionary(){}
 
-    public Dictionary(String word, String meaning) {
+    public Dictionary(String word, String meanings) {
         this.word= word;
-        this.meaning = meaning;
+        this.meanings = meanings;
     }
 
     public String getWord() {
@@ -20,11 +20,11 @@ public class Dictionary {
         this.word = word;
     }
 
-    public String getMeaning() {
-        return meaning;
+    public String getMeanings() {
+        return meanings;
     }
 
-    public void setMeaning(String meaning) {
-        this.meaning = meaning;
+    public void setMeanings(String meanings) {
+        this.meanings = meanings;
     }
 }

@@ -68,15 +68,13 @@ public class NotesDbAdapter {
     }
 
     public boolean deleteAllNotes() {
-        int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, null , null);
+        int doneDelete = mDb.delete(SQLITE_TABLE, null , null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }
 
     public boolean deleteNoteById(String id) {
-        int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, KEY_ROWID + "=" + id, null);
+        int doneDelete = mDb.delete(SQLITE_TABLE, KEY_ROWID + "=" + id, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }

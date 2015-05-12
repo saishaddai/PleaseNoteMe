@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditNote"
+            android:name=".EditNoteActivity"
             android:label="@string/title_activity_edit_note"
             android:parentActivityName=".MainActivity" >
             <meta-data

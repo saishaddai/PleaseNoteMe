@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
 
-                Intent intent = new Intent(context, EditNote.class);
+                Intent intent = new Intent(context, EditNoteActivity.class);
                 intent.putExtra(EXTRA_ID_NOTE, noteId);
                 intent.putExtra(EXTRA_TITLE, title);
                 intent.putExtra(EXTRA_CONTENT, content);
@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
     }
 
     public void addNewNote(View view) {
-        Intent intent = new Intent(context, EditNote.class);
+        Intent intent = new Intent(context, EditNoteActivity.class);
         intent.putExtra(EXTRA_ID_NOTE, "");
         intent.putExtra(EXTRA_TITLE, "");
         intent.putExtra(EXTRA_CONTENT, "");

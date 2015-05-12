@@ -16,7 +16,7 @@ import com.nearsoft.pleasenoteme.bean.Note;
 import com.nearsoft.pleasenoteme.repository.NotesDbAdapter;
 
 
-public class EditNote extends Activity {
+public class EditNoteActivity extends Activity {
 
     private static String BACK_BUTTON_VALUE = "Back";
     private static int MAX_TITLE_SIZE = 100;
@@ -101,7 +101,7 @@ public class EditNote extends Activity {
 
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        callIntent.setClass(EditNote.this, MainActivity.class);
+        callIntent.setClass(EditNoteActivity.this, MainActivity.class);
         startActivity(callIntent);
     }
 
@@ -117,7 +117,7 @@ public class EditNote extends Activity {
 
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            callIntent.setClass(EditNote.this, MainActivity.class);
+            callIntent.setClass(EditNoteActivity.this, MainActivity.class);
             startActivity(callIntent);
         } else {
             Toast.makeText(getApplicationContext(),
