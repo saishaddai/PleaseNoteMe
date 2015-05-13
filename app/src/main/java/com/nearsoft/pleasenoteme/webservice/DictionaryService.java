@@ -2,6 +2,7 @@ package com.nearsoft.pleasenoteme.webservice;
 
 import android.os.StrictMode;
 import android.util.Log;
+
 import com.nearsoft.pleasenoteme.bean.Dictionary;
 
 import org.json.JSONArray;
