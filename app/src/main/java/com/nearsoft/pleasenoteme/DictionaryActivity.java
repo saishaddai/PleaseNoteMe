@@ -1,7 +1,7 @@
 package com.nearsoft.pleasenoteme;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,10 +35,10 @@ public class DictionaryActivity extends Activity {
             return;
         }
         TextView wordTextView = (TextView) findViewById(R.id.definition_word);
-        wordTextView.setText("");
+        wordTextView.setText(" ");
 
         TextView meaningsTextView = (TextView) findViewById(R.id.definition_meanings);
-        meaningsTextView.setText("");
+        meaningsTextView.setText(" ");
 
         try {
             Dictionary dictionary = dictionaryService.connectWebService(keyword, getString(R.string.warning_no_definition_found));
@@ -48,11 +48,7 @@ public class DictionaryActivity extends Activity {
             Log.e(MainActivity.class.getName(), e.getMessage());
             Toast.makeText(getApplicationContext(),
                     R.string.error_unreachable_ws, Toast.LENGTH_SHORT).show();
-
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            callIntent.setClass(DictionaryActivity.this, MainActivity.class);
-            startActivity(callIntent);
+            DictionaryActivity.this.finish();
         }
     }
 

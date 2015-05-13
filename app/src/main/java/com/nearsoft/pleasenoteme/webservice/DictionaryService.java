@@ -74,8 +74,7 @@ public class DictionaryService {
         try {
             for (int i = 0; i < jsonMeanings.length(); ++i) {
                 String meaning = (String) jsonMeanings.get(i);
-                Log.e(TAG, meaning);
-                meanings.append("\n\t\t-");
+                meanings.append("\n\t\t -");
                 meanings.append(meaning);
             }
         } catch(JSONException e) {

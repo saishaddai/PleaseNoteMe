@@ -26,9 +26,9 @@
         android:layout_alignParentEnd="true" />
 
     <TextView android:id="@+id/definition_word"
+        android:textStyle="bold"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:gravity="top"
         android:layout_below="@+id/search_button" />
 
     <TextView android:id="@+id/definition_meanings"

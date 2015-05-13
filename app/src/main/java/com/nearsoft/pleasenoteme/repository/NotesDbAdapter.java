@@ -14,7 +14,7 @@ public class NotesDbAdapter {
     public static final String KEY_TITLE = "title";
     public static final String KEY_CONTENT = "content";
 
-    private static final String TAG = "noteMe";
+    private static final String TAG = NotesDbAdapter.class.toString();
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
@@ -65,6 +65,13 @@ public class NotesDbAdapter {
         initialValues.put(KEY_TITLE, title);
         initialValues.put(KEY_CONTENT, content);
         return mDb.insert(SQLITE_TABLE, null, initialValues);
+    }
+
+    public void updateNote(int id, String title, String content) {
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(KEY_TITLE, title);
+        updateValues.put(KEY_CONTENT, content);
+        mDb.update(SQLITE_TABLE, updateValues, KEY_ROWID + "=" + id, null);
     }
 
     public boolean deleteAllNotes() {

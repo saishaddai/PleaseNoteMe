@@ -54,41 +54,28 @@ public class EditNoteActivity extends Activity {
         String valueButton = deleteButton.getText().toString();
         if(valueButton.equals(BACK_BUTTON_VALUE)) {
             Toast.makeText(getApplicationContext(),
-                    R.string.warning_no_changes_saved, Toast.LENGTH_LONG).show();
+                    R.string.warning_no_changes_saved, Toast.LENGTH_SHORT).show();
+            EditNoteActivity.this.finish();
         } else {
             //this means the delete button was pressed
-            createAlertDialog(deleteButton, this);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.warning_delete_this_note)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.warning_confirm_delete, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = getIntent();
+                            String noteId = intent.getStringExtra(MainActivity.EXTRA_ID_NOTE);
+                            deleteNoteAndBackToMainActivity(noteId, EditNoteActivity.this);
+                        }
+                    })
+                    .setNegativeButton(R.string.warning_cancel_delete, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
-    }
-
-    private void createAlertDialog(Button deleteButton, final Context context) {
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
-
-                // set dialog message
-                alertDialogBuilder
-                        .setMessage(R.string.warning_delete_this_note)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.warning_confirm_delete, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = getIntent();
-                                String noteId = intent.getStringExtra(MainActivity.EXTRA_ID_NOTE);
-                                deleteNoteAndBackToMainActivity(noteId, context);
-                            }
-                        })
-                        .setNegativeButton(R.string.warning_cancel_delete, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
     }
 
     private void deleteNoteAndBackToMainActivity(String noteId, Context context) {
@@ -97,15 +84,14 @@ public class EditNoteActivity extends Activity {
         dbHelper.deleteNoteById(noteId);
 
         Toast.makeText(getApplicationContext(),
-                R.string.warning_note_erased, Toast.LENGTH_LONG).show();
+                R.string.warning_note_erased, Toast.LENGTH_SHORT).show();
 
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        callIntent.setClass(EditNoteActivity.this, MainActivity.class);
-        startActivity(callIntent);
+        EditNoteActivity.this.finish();
     }
 
     public void saveMessage(View view) {
+        Intent intent = getIntent();
+        String noteId = intent.getStringExtra(MainActivity.EXTRA_ID_NOTE);
         EditText titleComponent = (EditText) findViewById(R.id.edit_title);
         EditText contentComponent = (EditText) findViewById(R.id.edit_content);
 
@@ -113,15 +99,17 @@ public class EditNoteActivity extends Activity {
         if( note != null ) {
             NotesDbAdapter dbHelper = new NotesDbAdapter(this);
             dbHelper.open();
-            dbHelper.createNote(note.getTitle(), note.getContent());
-
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            callIntent.setClass(EditNoteActivity.this, MainActivity.class);
-            startActivity(callIntent);
+            if(!noteId.isEmpty()) { //is editing the note
+                dbHelper.updateNote(note.getId(), note.getTitle(), note.getContent());
+            } else {
+                dbHelper.createNote(note.getTitle(), note.getContent());
+            }
+            Toast.makeText(getApplicationContext(),
+                    R.string.warning_note_saved, Toast.LENGTH_SHORT).show();
+            EditNoteActivity.this.finish();
         } else {
             Toast.makeText(getApplicationContext(),
-                    R.string.warning_note_validation_invalid, Toast.LENGTH_LONG).show();
+                    R.string.warning_note_validation_invalid, Toast.LENGTH_SHORT).show();
         }
     }
 
