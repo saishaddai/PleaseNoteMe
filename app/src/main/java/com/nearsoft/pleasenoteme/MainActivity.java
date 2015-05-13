@@ -35,8 +35,9 @@ public class MainActivity extends Activity {
         dbHelper = new NotesDbAdapter(this);
         dbHelper.open();
         //TODO remove when needed. For demo purposes only
-        dbHelper.deleteAllNotes();
-        dbHelper.insertSomeNotes();
+//        dbHelper.deleteAllNotes();
+//        dbHelper.insertSomeNotes();
+
         displayNotes();
 
     }
