@@ -5,16 +5,18 @@
     android:weightSum="1">
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_save_note"
         android:onClick="saveMessage"
-        android:id="@+id/button"
         android:layout_toLeftOf="@+id/delete_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <Button
+        android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_back_button"
@@ -22,9 +24,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/delete_button" />
+        />
 
-    <EditText android:id="@+id/edit_title"
+    <EditText
+        android:id="@+id/edit_title"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:inputType="textMultiLine"
@@ -33,15 +36,18 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        />
 
-    <EditText android:id="@+id/edit_content"
+    <EditText
+        android:id="@+id/edit_content"
         android:layout_height="fill_parent"
         android:layout_width="match_parent"
         android:inputType="textMultiLine"
         android:gravity="top"
         android:hint="@string/hint_note_content"
-        android:layout_below="@+id/edit_title" />
+        android:layout_below="@+id/edit_title"
+        />
 
 
 </RelativeLayout>

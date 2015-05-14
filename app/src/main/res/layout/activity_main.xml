@@ -4,42 +4,46 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <Button android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/note_me_button_new"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="@string/common_note_me"
         android:textSize="20sp"
         android:onClick="addNewNote"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/button2"
+        android:layout_toLeftOf="@+id/note_me_dictionary_button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <Button
+        android:id="@+id/note_me_dictionary_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_dictionary"
-        android:id="@+id/button2"
         android:layout_gravity="end"
         android:onClick="useDictionary"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <EditText android:id="@+id/myFilter"
+    <EditText
+        android:id="@+id/note_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/hint_filter_hint"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/note_me_dictionary_button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ListView android:id="@+id/listView1"
+    <ListView
+        android:id="@+id/note_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/myFilter" />
+        android:layout_below="@+id/note_filter" />
 
 </RelativeLayout>

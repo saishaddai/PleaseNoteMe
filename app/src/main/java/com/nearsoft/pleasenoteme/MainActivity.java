@@ -26,7 +26,6 @@ public class MainActivity extends Activity {
     public final static String EXTRA_CONTENT = "com.nearsoft.pleasenote.CONTENT";
     Context context = this;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +51,7 @@ public class MainActivity extends Activity {
 
         int[] to = new int[] {R.id.note_id, R.id.note_title};
         dataAdapter = new SimpleCursorAdapter(this, R.layout.notes_info, cursor, columns, to, 0);
-        ListView listView = (ListView) findViewById(R.id.listView1);
+        ListView listView = (ListView) findViewById(R.id.note_list);
         listView.setAdapter(dataAdapter);
 
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -72,7 +71,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        EditText myFilter = (EditText) findViewById(R.id.myFilter);
+        EditText myFilter = (EditText) findViewById(R.id.note_filter);
         myFilter.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
