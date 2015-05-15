@@ -19,40 +19,40 @@ import com.nearsoft.pleasenoteme.repository.NotesDbAdapter;
 
 public class MainActivity extends Activity {
 
-    private NotesDbAdapter dbHelper;
-    private SimpleCursorAdapter dataAdapter;
     public final static String EXTRA_ID_NOTE = "com.nearsoft.pleasenote.ID_NOTE";
     public final static String EXTRA_TITLE = "com.nearsoft.pleasenote.TITLE";
     public final static String EXTRA_CONTENT = "com.nearsoft.pleasenote.CONTENT";
-    Context context = this;
+
+    private NotesDbAdapter notesDbAdapter;
+    private SimpleCursorAdapter simpleCursorAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new NotesDbAdapter(this);
-        dbHelper.open();
+        notesDbAdapter = new NotesDbAdapter(this);
+        notesDbAdapter.open();
         //TODO remove when needed. For demo purposes only
-//        dbHelper.deleteAllNotes();
-//        dbHelper.insertSomeNotes();
+//        notesDbAdapter.deleteAllNotes();
+//        notesDbAdapter.insertSomeNotes();
 
         displayNotes();
 
     }
 
     private void displayNotes() {
-        Cursor cursor = dbHelper.getAllNotes();
-        String[] columns = new String[] {
+        Cursor cursor = notesDbAdapter.getAllNotes();
+        String[] columns = new String[]{
                 NotesDbAdapter.KEY_ROWID,
                 NotesDbAdapter.KEY_TITLE,
                 NotesDbAdapter.KEY_CONTENT
         };
 
-        int[] to = new int[] {R.id.note_id, R.id.note_title};
-        dataAdapter = new SimpleCursorAdapter(this, R.layout.notes_info, cursor, columns, to, 0);
+        int[] to = new int[]{R.id.note_id, R.id.note_title};
+        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.notes_info, cursor, columns, to, 0);
         ListView listView = (ListView) findViewById(R.id.note_list);
-        listView.setAdapter(dataAdapter);
+        listView.setAdapter(simpleCursorAdapter);
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -63,11 +63,7 @@ public class MainActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
 
-                Intent intent = new Intent(context, EditNoteActivity.class);
-                intent.putExtra(EXTRA_ID_NOTE, noteId);
-                intent.putExtra(EXTRA_TITLE, title);
-                intent.putExtra(EXTRA_CONTENT, content);
-                startActivity(intent);
+                setupIntent(noteId, title, content, (Context) MainActivity.this);
             }
         });
 
@@ -82,27 +78,31 @@ public class MainActivity extends Activity {
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                dataAdapter.getFilter().filter(s.toString());
+                simpleCursorAdapter.getFilter().filter(s.toString());
             }
         });
 
-        dataAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+        simpleCursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
-                return dbHelper.getNotesByName(constraint.toString());
+                return notesDbAdapter.getNotesByName(constraint.toString());
             }
         });
     }
 
-    public void addNewNote(View view) {
+    private void setupIntent(String noteId, String title, String content, Context context) {
         Intent intent = new Intent(context, EditNoteActivity.class);
-        intent.putExtra(EXTRA_ID_NOTE, "");
-        intent.putExtra(EXTRA_TITLE, "");
-        intent.putExtra(EXTRA_CONTENT, "");
+        intent.putExtra(EXTRA_ID_NOTE, noteId);
+        intent.putExtra(EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_CONTENT, content);
         startActivity(intent);
     }
 
+    public void addNewNote(View view) {
+        setupIntent("", "", "", this);
+    }
+
     public void useDictionary(View view) {
-        Intent intent = new Intent(context, DictionaryActivity.class);
+        Intent intent = new Intent(this, DictionaryActivity.class);
         startActivity(intent);
     }
 }
