@@ -15,7 +15,7 @@ import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.nearsoft.pleasenoteme.repository.NotesDbAdapter;
+import com.nearsoft.pleasenoteme.repository.NotesRepository;
 
 public class MainActivity extends Activity {
 
@@ -23,34 +23,59 @@ public class MainActivity extends Activity {
     public final static String EXTRA_TITLE = "com.nearsoft.pleasenote.TITLE";
     public final static String EXTRA_CONTENT = "com.nearsoft.pleasenote.CONTENT";
 
-    private NotesDbAdapter notesDbAdapter;
+    private NotesRepository notesRepository;
     private SimpleCursorAdapter simpleCursorAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupActivity();
+    }
 
-        notesDbAdapter = new NotesDbAdapter(this);
-        notesDbAdapter.open();
-        //TODO remove when needed. For demo purposes only
-//        notesDbAdapter.deleteAllNotes();
-//        notesDbAdapter.insertSomeNotes();
-
+    private void setupActivity() {
+        notesRepository = new NotesRepository(this);
+        notesRepository.open();
         displayNotes();
-
     }
 
     private void displayNotes() {
-        Cursor cursor = notesDbAdapter.getAllNotes();
-        String[] columns = new String[]{
-                NotesDbAdapter.KEY_ROWID,
-                NotesDbAdapter.KEY_TITLE,
-                NotesDbAdapter.KEY_CONTENT
-        };
+        getNotesCursor();
+        setNotesInView();
+        addNotesFilter();
+    }
 
-        int[] to = new int[]{R.id.note_id, R.id.note_title};
-        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.notes_info, cursor, columns, to, 0);
+    private void addNotesFilter() {
+        EditText myFilter = (EditText) findViewById(R.id.note_filter);
+        myFilter.addTextChangedListener(getFilterTextWatcher());
+        simpleCursorAdapter.setFilterQueryProvider(getFilterQueryProvider());
+    }
+
+    private FilterQueryProvider getFilterQueryProvider() {
+        return new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence constraint) {
+                return notesRepository.getNotesByName(constraint.toString());
+            }
+        };
+    }
+
+    private TextWatcher getFilterTextWatcher() {
+        return new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                simpleCursorAdapter.getFilter().filter(s.toString());
+            }
+        };
+    }
+
+    private void setNotesInView() {
         ListView listView = (ListView) findViewById(R.id.note_list);
         listView.setAdapter(simpleCursorAdapter);
 
@@ -63,30 +88,20 @@ public class MainActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
 
-                setupIntent(noteId, title, content, (Context) MainActivity.this);
+                setupIntent(noteId, title, content, MainActivity.this);
             }
         });
+    }
 
-        EditText myFilter = (EditText) findViewById(R.id.note_filter);
-        myFilter.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                simpleCursorAdapter.getFilter().filter(s.toString());
-            }
-        });
-
-        simpleCursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
-            public Cursor runQuery(CharSequence constraint) {
-                return notesDbAdapter.getNotesByName(constraint.toString());
-            }
-        });
+    private void getNotesCursor() {
+        Cursor cursor = notesRepository.getAllNotes();
+        String[] columns = new String[]{
+                NotesRepository.KEY_ROWID,
+                NotesRepository.KEY_TITLE,
+                NotesRepository.KEY_CONTENT
+        };
+        int[] to = new int[]{R.id.note_id, R.id.note_title};
+        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.notes_info, cursor, columns, to, 0);
     }
 
     private void setupIntent(String noteId, String title, String content, Context context) {
@@ -97,11 +112,11 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public void addNewNote(View view) {
+    public void noteMeButtonPressedAction(View view) {
         setupIntent("", "", "", this);
     }
 
-    public void useDictionary(View view) {
+    public void dictionaryButtonPressedAction(View view) {
         Intent intent = new Intent(this, DictionaryActivity.class);
         startActivity(intent);
     }

@@ -12,8 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nearsoft.pleasenoteme.bean.Note;
-import com.nearsoft.pleasenoteme.repository.NotesDbAdapter;
+import com.nearsoft.pleasenoteme.entity.Note;
+import com.nearsoft.pleasenoteme.repository.NotesRepository;
+import com.nearsoft.pleasenoteme.utils.StringUtilities;
 
 
 public class EditNoteActivity extends Activity {
@@ -26,15 +27,58 @@ public class EditNoteActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
+        setupActivity();
+    }
 
-        String noteId = getNoteId();
-
-        if (!noteId.isEmpty()) { //is editing the note
-            setupTextAndBackgroundEditText(noteId, R.id.edit_title);
-            setupTextAndBackgroundEditText(noteId, R.id.edit_content);
-            setupDeleteButton();
-            Toast.makeText(getApplicationContext(), noteId, Toast.LENGTH_LONG).show();
+    public void cancelOrDeleteButtonPressedAction(View view) {
+        if (isBackButtonPressed(view)) {
+            showWarning(R.string.warning_no_changes_saved);
+            finish();
+        } else {
+            showDeleteConfirmationDialog();
         }
+    }
+
+    public void saveButtonPressedAction(View view) {
+        String noteId = getNoteId();
+        EditText titleComponent = getEditTextById(R.id.edit_title);
+        EditText contentComponent = getEditTextById(R.id.edit_content);
+
+        Note note = getNoteFromComponents(titleComponent, contentComponent);
+        if (note != null) {
+            updateOrInsertNote(noteId, note);
+            showWarning(R.string.warning_note_saved);
+            finish();//TODO recharge the cursor of notes getting
+        } else {
+            showWarning(R.string.warning_note_validation_invalid);
+        }
+    }
+
+    private void updateOrInsertNote(String noteId, Note note) {
+        NotesRepository notesRepository = new NotesRepository(this);
+        notesRepository.open();
+        if (!noteId.isEmpty()) {
+            notesRepository.updateNote(note.getId(), note.getTitle(), note.getContent());
+        } else {
+            notesRepository.createNote(note.getTitle(), note.getContent());
+        }
+    }
+
+    private void setupActivity() {
+        String noteId = getNoteId();
+        boolean isEditingNote = !noteId.isEmpty();
+        if (isEditingNote) {
+            setStylesToEditionMode();
+        }
+    }
+
+    private void setStylesToEditionMode() {
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(MainActivity.EXTRA_TITLE);
+        String content = intent.getStringExtra(MainActivity.EXTRA_CONTENT);
+        setupTextAndBackgroundEditText(title, R.id.edit_title);
+        setupTextAndBackgroundEditText(content, R.id.edit_content);
+        setupDeleteButton();
     }
 
     private void setupDeleteButton() {
@@ -42,29 +86,14 @@ public class EditNoteActivity extends Activity {
         deleteButton.setText(R.string.button_delete_note);
     }
 
-    private void setupTextAndBackgroundEditText(String noteId, int edit_title) {
-        EditText editTextTitle = getEditTextById(edit_title);
-        editTextTitle.setText(noteId);
+    private void setupTextAndBackgroundEditText(String message, int editId) {
+        EditText editTextTitle = getEditTextById(editId);
+        editTextTitle.setText(message);
         editTextTitle.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
     }
 
     private String getNoteId() {
         return getIntent().getStringExtra(MainActivity.EXTRA_ID_NOTE);
-    }
-
-    public void onDeleteMessage(View view) {
-        if (isBackButtonPressed(view)) {
-            showNoChangesSavedWarning();
-            finish();
-        } else {
-            //this means the delete button was pressed
-            showAlertDialog();
-        }
-    }
-
-    private void showNoChangesSavedWarning() {
-        Toast.makeText(getApplicationContext(),
-                R.string.warning_no_changes_saved, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isBackButtonPressed(View view) {
@@ -73,7 +102,7 @@ public class EditNoteActivity extends Activity {
         return valueButton.equals(BACK_BUTTON_VALUE);
     }
 
-    private void showAlertDialog() {
+    private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.warning_delete_this_note)
                 .setCancelable(false)
@@ -94,37 +123,11 @@ public class EditNoteActivity extends Activity {
     }
 
     private void deleteNoteAndBackToMainActivity(String noteId, Context context) {
-        NotesDbAdapter notesDbAdapter = new NotesDbAdapter(context);
-        notesDbAdapter.open();
-        notesDbAdapter.deleteNoteById(noteId);
-
-        Toast.makeText(getApplicationContext(),
-                R.string.warning_note_erased, Toast.LENGTH_SHORT).show();
-
+        NotesRepository notesRepository = new NotesRepository(context);
+        notesRepository.open();
+        notesRepository.deleteNoteById(noteId);
+        showWarning(R.string.warning_note_erased);
         finish();
-    }
-
-    public void saveMessage(View view) {
-        String noteId = getNoteId();
-        EditText titleComponent = getEditTextById(R.id.edit_title);
-        EditText contentComponent = getEditTextById(R.id.edit_content);
-
-        Note note = getNoteFromComponents(titleComponent, contentComponent);
-        if (note != null) {
-            NotesDbAdapter notesDbAdapter = new NotesDbAdapter(this);
-            notesDbAdapter.open();
-            if (!noteId.isEmpty()) { //is editing the note
-                notesDbAdapter.updateNote(note.getId(), note.getTitle(), note.getContent());
-            } else {
-                notesDbAdapter.createNote(note.getTitle(), note.getContent());
-            }
-            Toast.makeText(getApplicationContext(),
-                    R.string.warning_note_saved, Toast.LENGTH_SHORT).show();
-            EditNoteActivity.this.finish();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    R.string.warning_note_validation_invalid, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private EditText getEditTextById(int edit_title) {
@@ -138,11 +141,16 @@ public class EditNoteActivity extends Activity {
         String title = titleComponent.getText().toString();
         String content = contentComponent.getText().toString();
 
-        // is this business logic?
-        if (!title.isEmpty() && title.length() <= MAX_TITLE_SIZE &&
-                !content.isEmpty() && content.length() <= MAX_CONTENT_SIZE) {
+        boolean validatesNote = StringUtilities.isValidStringLength(title, MAX_TITLE_SIZE) &&
+                StringUtilities.isValidStringLength(content, MAX_CONTENT_SIZE);
+
+        if (validatesNote) {
             return new Note(title, content);
         }
         return null;
+    }
+
+    private void showWarning(int idMessage) {
+        Toast.makeText(getApplicationContext(), getString(idMessage), Toast.LENGTH_SHORT).show();
     }
 }

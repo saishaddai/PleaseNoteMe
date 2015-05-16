@@ -1,9 +1,9 @@
-package com.nearsoft.pleasenoteme.webservice;
+package com.nearsoft.pleasenoteme.service;
 
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.nearsoft.pleasenoteme.bean.Dictionary;
+import com.nearsoft.pleasenoteme.entity.Dictionary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,10 +16,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DictionaryService {
-    String TAG = DictionaryService.class.getName();
+public class DictionaryWebService {
+    String TAG = DictionaryWebService.class.getName();
 
-    public Dictionary connectWebService(String keyword, String noDefinitionFoundMessage) throws Exception{
+    public Dictionary search(String keyword, String noDefinitionFoundMessage) throws Exception{
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         HttpURLConnection urlConnection = null;

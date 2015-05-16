@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 public class NotesDbAdapterTest extends TestCase {
 
     MockContext context;
-    NotesDbAdapter repository;
+    NotesRepository repository;
 
     private static final String TITLE="This is a title";
     private static final String CONTENT="This is the content of the note";
@@ -20,7 +20,7 @@ public class NotesDbAdapterTest extends TestCase {
 
     public void setUp() {
         context = new MockContext();
-        repository = new NotesDbAdapter(context);
+        repository = new NotesRepository(context);
     }
 
     public void testCreateNoteNullParameters() throws Exception {

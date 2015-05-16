@@ -11,7 +11,7 @@
         android:padding="10dp"
         android:text="@string/common_note_me"
         android:textSize="20sp"
-        android:onClick="addNewNote"
+        android:onClick="noteMeButtonPressedAction"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/note_me_dictionary_button"
         android:layout_alignParentLeft="true"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:text="@string/button_dictionary"
         android:layout_gravity="end"
-        android:onClick="useDictionary"
+        android:onClick="dictionaryButtonPressedAction"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

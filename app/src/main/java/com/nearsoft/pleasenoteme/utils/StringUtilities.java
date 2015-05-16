@@ -9,4 +9,8 @@ public class StringUtilities {
         return keyword.replaceAll("[^\\p{L}\\p{Nd}]+", "").toLowerCase();
     }
 
+    public static boolean isValidStringLength(String inputString, int maxSize) {
+        return !inputString.isEmpty() && inputString.length() <= maxSize;
+    }
+
 }

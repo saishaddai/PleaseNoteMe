@@ -1,4 +1,4 @@
-package com.nearsoft.pleasenoteme.bean;
+package com.nearsoft.pleasenoteme.entity;
 
 public class Note {
 

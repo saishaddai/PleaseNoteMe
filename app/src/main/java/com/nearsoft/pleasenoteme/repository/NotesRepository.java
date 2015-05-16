@@ -8,13 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class NotesDbAdapter {
+public class NotesRepository {
 
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TITLE = "title";
     public static final String KEY_CONTENT = "content";
 
-    private static final String TAG = NotesDbAdapter.class.toString();
+    private static final String TAG = NotesRepository.class.toString();
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
@@ -25,7 +25,7 @@ public class NotesDbAdapter {
     private final Context mCtx;
 
     private static final String DATABASE_CREATE =
-            "CREATE TABLE IF NOT EXIST " + SQLITE_TABLE + " (" +
+            "CREATE TABLE IF NOT EXISTS " + SQLITE_TABLE + " (" +
                     KEY_ROWID + " integer PRIMARY KEY AUTOINCREMENT," +
                     KEY_TITLE + "," +
                     KEY_CONTENT + ");";
@@ -50,11 +50,11 @@ public class NotesDbAdapter {
         }
     }
 
-    public NotesDbAdapter(Context ctx) {
+    public NotesRepository(Context ctx) {
         this.mCtx = ctx;
     }
 
-    public NotesDbAdapter open() throws SQLException {
+    public NotesRepository open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
